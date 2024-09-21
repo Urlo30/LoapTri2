@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from mediaflow_proxy.main import app as mediaflow_app
 import httpx
 import re
-import strings
+import string
 main_app = FastAPI()
 
 main_app.router.include_router(mediaflow_app.router)
