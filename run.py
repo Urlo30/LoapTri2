@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from mediaflow_proxy.main import app as mediaflow_app
-FastAPI = main_app()
+main_app = FastAPI()
+
 main_app.router.include_router(mediaflow_app.router)
 
 # Define any additional routes for the main app
