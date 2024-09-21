@@ -101,7 +101,7 @@ async def generate_encrypted_or_encoded_url(request: GenerateUrlRequest):
 app.include_router(proxy_router, prefix="/proxy", tags=["proxy"], dependencies=[Depends(verify_api_key)])
 
 static_path = resources.files("mediaflow_proxy").joinpath("static")
-app.mount("/", StaticFiles(directory=str(static_path), html=True), name="static")
+app.mount("/static", StaticFiles(directory=str(static_path), html=True), name="static")
 
 
 def run():
