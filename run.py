@@ -1,5 +1,8 @@
 from fastapi import FastAPI, APIRouter
 from mediaflow_proxy.main import app as mediaflow_app
+import httpx
+import re
+import strings
 main_app = FastAPI()
 
 main_app.router.include_router(mediaflow_app.router)
@@ -15,7 +18,7 @@ async def huhu(id:str):
         return response.url
 
 @main_app.get('/mixdrop/')
-async def mixdrop(url:str):
+async def mixdrop(d:str):
     print(f"Received ID: {id}")
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.10; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
