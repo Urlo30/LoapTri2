@@ -14,8 +14,8 @@ async def huhu(id:str):
         response = client.get(f"https://huhu.to/play/{id}/index.m3u8")
         return response.url
 
-@main_app.get('/mixdrop/{id}')
-async def mixdrop(id:str):
+@main_app.get('/mixdrop/')
+async def mixdrop(url:str):
     print(f"Received ID: {id}")
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.10; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
