@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException,Request
 from mediaflow_proxy.main import app as mediaflow_app
 from importlib import resources
-
+from fastapi.staticfiles import StaticFiles
 
 
 main_app = FastAPI()
