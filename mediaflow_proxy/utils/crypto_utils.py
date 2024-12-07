@@ -1,6 +1,9 @@
 import base64
 import json
+import logging
 import time
+import traceback
+from typing import Optional
 from urllib.parse import urlencode
 
 from Crypto.Cipher import AES
@@ -75,11 +78,19 @@ class EncryptionMiddleware(BaseHTTPMiddleware):
             except HTTPException as e:
                 return JSONResponse(content={"error": str(e.detail)}, status_code=e.status_code)
 
-        response = await call_next(request)
+        try:
+            response = await call_next(request)
+        except Exception:
+            exc = traceback.format_exc(chain=False)
+            logging.error("An error occurred while processing the request, error: %s", exc)
+            return JSONResponse(
+                content={"error": "An error occurred while processing the request, check the server for logs"},
+                status_code=500,
+            )
         return response
 
     @staticmethod
-    def get_client_ip(request: Request) -> str | None:
+    def get_client_ip(request: Request) -> Optional[str]:
         """
         Extract the client's real IP address from the request headers or fallback to the client host.
         """
