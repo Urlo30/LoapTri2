@@ -1,43 +1,18 @@
-from fastapi import FastAPI, APIRouter
-from mediaflow_proxy.main import app as mediaflow_app
+from fastapi import FastAPI
+from mediaflow_proxy.main import app as mediaflow_app  # Import mediaflow app
 import httpx
 import re
 import string
+
+# Initialize the main FastAPI application
 main_app = FastAPI()
 
-main_app.router.include_router(mediaflow_app.router)
+# Manually add only non-static routes from mediaflow_app
+for route in mediaflow_app.routes:
+    if route.path != "/":  # Exclude the static file path
+        main_app.router.routes.append(route)
 
-# Define any additional routes for the main app
-@main_app.get("/wow")
-async def root():
-    return {"message": "This is the main app"}
-@main_app.get('/huhu/')
-async def huhu(d:str):
-    async with httpx.AsyncClient() as client:
-        response = client.get(f"https://huhu.to/play/{d}/index.m3u8")
-        return response.url
-
-@main_app.get('/mixdrop/')
-async def mixdrop(d:str):
-    print(f"Received ID: d")
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.10; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-        'Accept-Language': 'en-US,en;q=0.5'
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.get(d, headers=headers, follow_redirects=True,timeout = 30)
-        [s1, s2] = re.search(r"\}\('(.+)',.+,'(.+)'\.split", response.text).group(1, 2)
-        schema = s1.split(";")[2][5:-1]
-        terms = s2.split("|")
-        charset = string.digits + string.ascii_letters
-        d = dict()
-        for i in range(len(terms)):
-            d[charset[i]] = terms[i] or charset[i]
-        s = 'https:'
-        for c in schema:
-            s += d[c] if c in d else c
-        return s
-
+# Run the main app
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(main_app, host="0.0.0.0", port=8080)
