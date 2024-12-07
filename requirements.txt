@@ -16,3 +16,4 @@ xmltodict
 starlette
 cachetools
 tqdm
+aiofiles
